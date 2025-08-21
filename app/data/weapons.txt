@@ -1,0 +1,18 @@
+ak-47
+ak47
+rpg
+grenade
+gun
+rifle
+pistol
+explosive
+explosives
+bomb
+car bomb
+tnt
+knife
+m16
+kalashnikov
+machine gun
+assault rifle
+molotov

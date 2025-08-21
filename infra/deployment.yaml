@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hostile-tweets-ex
+  labels:
+    app: hostile-tweets-ex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hostile-tweets-ex
+  template:
+    metadata:
+      labels:
+        app: hostile-tweets-ex
+    spec:
+      containers:
+        - name: api
+          # החלף ל-<dockerhub-user>/hostile-tweets-ex:latest
+          image: YOUR_DOCKERHUB_USER/hostile-tweets-ex:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-conn
+                  key: MONGO_URI
+            - name: MONGO_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: hostile-config
+                  key: MONGO_DB_NAME
+            - name: MONGO_COLLECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: hostile-config
+                  key: MONGO_COLLECTION
+            - name: WEAPONS_FILE
+              valueFrom:
+                configMapKeyRef:
+                  name: hostile-config
+                  key: WEAPONS_FILE
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
